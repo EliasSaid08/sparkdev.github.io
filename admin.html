@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Spark Dev</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-cogs"></i> Admin Panel - Spark Dev
+            </div>
+            <a href="index.html" class="back-btn">
+                <i class="fas fa-home"></i>
+                Volver al Sitio
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Alerts -->
+        <div id="successAlert" class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span id="successMessage"></span>
+        </div>
+        <div id="errorAlert" class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="errorMessage"></span>
+        </div>
+
+        <!-- Admin Panel -->
+        <div class="admin-panel">
+            <!-- Add Project Form -->
+            <div class="panel-section">
+                <h2 class="section-title">
+                    <i class="fas fa-plus-circle"></i>
+                    Agregar Nuevo Proyecto
+                </h2>
+                <form id="projectForm">
+                    <div class="form-group">
+                        <label class="form-label">Título del Proyecto</label>
+                        <input type="text" id="projectTitle" class="form-input" placeholder="Ej: Sistema de Gestión" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descripción</label>
+                        <textarea id="projectDescription" class="form-textarea" placeholder="Describe tu proyecto..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Imagen del Proyecto</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="projectImage" class="file-input" accept="image/*">
+                            <label for="projectImage" class="file-input-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                Seleccionar Imagen
+                            </label>
+                        </div>
+                        <img id="imagePreview" class="image-preview" alt="Preview">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <span id="submitText">Agregar Proyecto</span>
+                        <span id="submitLoading" class="loading" style="display: none;"></span>
+                        <i id="submitIcon" class="fas fa-plus"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Instructions -->
+            <div class="panel-section">
+                <h2 class="section-title">
+                    <i class="fas fa-info-circle"></i>
+                    Instrucciones de Uso
+                </h2>
+                <div style="color: #CCCCCC; line-height: 1.8;">
+                    <p style="margin-bottom: 1rem;"><strong>1. Agregar Proyecto:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Completa el título y descripción</li>
+                        <li>Selecciona una imagen (PNG, JPG, WebP)</li>
+                        <li>Haz clic en "Agregar Proyecto"</li>
+                    </ul>
+                    
+                    <p style="margin-bottom: 1rem;"><strong>2. Gestionar Proyectos:</strong></p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Ve todos tus proyectos abajo</li>
+                        <li>Elimina proyectos que ya no necesites</li>
+                        <li>Los cambios se guardan localmente</li>
+                    </ul>
+
+                    <p style="margin-bottom: 1rem;"><strong>3. Para aplicar a tu sitio web:</strong></p>
+                    <ul style="margin-left: 1.5rem;">
+                        <li>Copia el código generado más abajo</li>
+                        <li>Reemplaza la sección de proyectos en tu index.html</li>
+                        <li>Sube las imágenes a tu carpeta /imagenes/</li>
+                        <li>Actualiza tu sitio en Vercel</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Section -->
+        <div class="panel-section">
+            <h2 class="section-title">
+                <i class="fas fa-project-diagram"></i>
+                Proyectos Guardados
+                <span id="projectCount" style="font-size: 1rem; color: var(--white); background: var(--purple); padding: 0.2rem 0.8rem; border-radius: 20px;">0</span>
+            </h2>
+            <div id="projectsGrid" class="projects-grid">
+                <!-- Projects will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Generated Code Section -->
+        <div class="code-section">
+            <h2 class="section-title">
+                <i class="fas fa-code"></i>
+                Código HTML Generado
+            </h2>
+            <p style="color: #CCCCCC; margin-bottom: 1rem;">
+                Copia este código y reemplaza la sección de proyectos (desde &lt;section class="section" id="proyectos"&gt; hasta &lt;/section&gt;) en tu archivo index.html:
+            </p>
+            <div class="code-block" id="generatedCode">
+                <!-- Generated HTML will appear here -->
+            </div>
+            <button class="copy-btn" onclick="copyCode()">
+                <i class="fas fa-copy"></i> Copiar
+            </button>
+        </div>
+
+        <!-- Export/Import Section -->
+        <div class="panel-section">
+            <h2 class="section-title">
+                <i class="fas fa-download"></i>
+                Backup y Restauración
+            </h2>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <button class="btn btn-primary" onclick="exportProjects()">
+                    <i class="fas fa-download"></i>
+                    Descargar Backup
+                </button>
+                <div class="file-input-wrapper" style="flex: 1;">
+                    <input type="file" id="importFile" class="file-input" accept=".json">
+                    <label for="importFile" class="file-input-label btn" style="margin: 0; width: 100%; justify-content: center;">
+                        <i class="fas fa-upload"></i>
+                        Restaurar Backup
+                    </label>
+                </div>
+            </div>
+            <p style="color: #888; font-size: 0.9rem; margin-top: 0.5rem;">
+                Usa estas funciones para hacer copias de seguridad de tus proyectos o transferirlos entre dispositivos.
+            </p>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirmar Eliminación</h3>
+                <button class="close-btn" onclick="closeDeleteModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <p style="color: #CCCCCC; margin-bottom: 1.5rem;">
+                ¿Estás seguro de que deseas eliminar este proyecto? Esta acción no se puede deshacer.
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                <button class="btn btn-primary" onclick="closeDeleteModal()">Cancelar</button>
+                <button class="btn btn-danger" onclick="confirmDelete()">
+                    <i class="fas fa-trash"></i>
+                    Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin-script.js"></script>
+</body>
+</html>

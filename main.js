@@ -155,3 +155,46 @@ function createSparkle(container) {
 document.addEventListener('DOMContentLoaded', function() {
     createWelcomeAnimation();
 });
+
+
+
+// Cargar proyectos dinámicamente
+function loadDynamicProjects() {
+    const projectsGrid = document.getElementById('dynamic-projects');
+    const savedProjects = localStorage.getItem('sparkdev-projects');
+    
+    if (!projectsGrid) return;
+    
+    if (savedProjects) {
+        const projects = JSON.parse(savedProjects);
+        projectsGrid.innerHTML = projects.map(project => `
+            <div class="card">
+                <img src="${project.imageName.startsWith('/') ? project.imageName : '/imagenes/' + project.imageName}" alt="Proyecto" class="project-img">
+                <h3 class="card-title">${project.title}</h3>
+                <p>${project.description}</p>
+            </div>
+        `).join('');
+    } else {
+        // Mostrar proyectos por defecto
+        projectsGrid.innerHTML = `
+            <div class="card">
+                <img src="/imagenes/menuadmin.png" alt="Proyecto 1" class="project-img">
+                <h3 class="card-title">CREMOSO HELADERIA</h3>
+                <p>Un sistema de gestión a medida que incluye procesamiento de ventas y pagos, gestión de inventario y un panel administrativo personalizado.</p>
+            </div>
+            <div class="card">
+                <img src="/imagenes/stats.png" alt="Proyecto 2" class="project-img">
+                <h3 class="card-title">App Financiera</h3>
+                <p>Aplicación móvil para control de gastos con análisis de datos, visualizaciones y recomendaciones personalizadas.</p>
+            </div>
+            <div class="card">
+                <img src="/imagenes/image.png" alt="Proyecto 3" class="project-img">
+                <h3 class="card-title">App Control Taller</h3>
+                <p>Aplicación para control de Clientes, vehiculos y Citas para el mismo, cuenta con opciones de Agregado, Borrado y Modificacion.</p>
+            </div>
+        `;
+    }
+}
+
+// Cargar al iniciar la página
+document.addEventListener('DOMContentLoaded', loadDynamicProjects);
